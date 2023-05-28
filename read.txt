@@ -1,0 +1,248 @@
+https://www.youtube.com/watch?v=c2M-rlkkT5o
+
+School> db.students.find().sort({name:-1})  descending order
+School> db.students.find().sort({name:1}) alphabeticall order by name
+School> db.students.find() find all documents in collections
+
+Creating a document with nested format
+School> db.class.insertOne({name:"merv",age:25,fullTime:true, registrationDate: new Date(),GraduautonDate:null, courses:["English","Maths","Spanish"], address:{street:"Davila",city:"Santander",zipCode:456333}})
+
+To delete a collection : 
+Teacher> db.dropDatabase()
+
+To create a collection 
+Teacher> db.createCollection("Subject")
+
+to show all db
+BookStore> show dbs
+To switch between dropDatabase
+BookStore> use Teacher
+
+To limit number of documents we want to street
+School> db.students.find().limit(3)
+
+To find the oldest one 
+School> db.students.find().sort({age:-1}).limit(1)
+To find the youngest one 
+School> db.students.find().sort({age:1}).limit(1)
+
+To filter only names   we use empty {} to select all documents
+find({query},{projection parameter})
+School> db.students.find({},{name:true})
+Sample Output : 
+ { _id: ObjectId("646d3906f2b326820c1ffd6b"), name: 'Tiffany' },
+  { _id: ObjectId("646d3906f2b326820c1ffd6c"), name: 'Hanny' }
+
+  To see only names
+  School> db.students.find({},{_id:false,name:true})
+  Sample Output 
+  { name: 'Tiffany' },
+  { name: 'Hanny' }
+To see only name and age
+School> db.students.find({},{_id:false,name:true,age:true})
+Sample Output
+ { name: 'Billy', age: 64 },
+  { name: 'Tiffany', age: 19 },
+  { name: 'Hanny', age: 13 }
+
+
+  To update existing document
+  School> db.students.updateOne({name:"Billy"},{$set:{age:99}})
+  School> db.students.find({name:"Billy"})
+
+  Updating by using _id
+  School> db.students.updateOne({_id:ObjectId("646d3906f2b326820c1ffd6b")},{$set:{age:55}})
+
+  To remove or UNSET field
+  School> db.students.updateOne({_id:ObjectId("646d3906f2b326820c1ffd6b")},{$unset:{age:""}})
+Sample Output
+ { _id: ObjectId("646d3906f2b326820c1ffd6b"), name: 'Tiffany' },
+  { _id: ObjectId("646d3906f2b326820c1ffd6c"), name: 'Hanny', age: 13 }
+
+To add new field
+School> db.students.updateMany({},{$set:{fullTime:true}})
+Sample Output
+ {
+    _id: ObjectId("646d3906f2b326820c1ffd6c"),
+    name: 'Hanny',
+    age: 13,
+    fullTime: true
+  }
+To update one documetn
+  School> db.students.updateOne({name:"Hanny"},{$set:{fullTime:false}})
+
+  School> db.students.find({name:"Hanny"})
+
+ {
+    _id: ObjectId("646d3906f2b326820c1ffd6c"),
+    name: 'Hanny',
+    age: 13,
+    fullTime: false
+  }
+
+  To remove a field from a document
+  School> db.students.updateOne({name:"Hanny"},{$unset:{fullTime:""}})
+
+   { _id: ObjectId("646d3906f2b326820c1ffd6c"), name: 'Hanny', age: 13 }
+
+   To update document if they do not have a field..if exists ,false else true
+   School> db.students.updateMany({fullTime:{$exists:false}},{$set:{fullTime:true}})
+
+ {
+    _id: ObjectId("646d3906f2b326820c1ffd6c"),
+    name: 'Hanny',
+    age: 13,
+    fullTime: true
+  }
+
+  School> db.students.updateOne({filter},{update})
+
+  To DELETE document 
+
+  School> db.students.deleteOne({name:"Hanny"})
+
+To DELETE MANY documents
+School> db.students.deleteOne({fullTime:false})
+
+Create a document
+School> db.students.insertOne({name:"sdet",age:22,fullTime:false,email:"qa@mail.com"})
+
+Delete the documents which do not have email
+School> db.students.deleteMany({email:{$exists:false}})
+
+{ acknowledged: true, deletedCount: 6 }
+
+School> db.students.deleteMany({email:{$exists:true}})
+
+{ acknowledged: true, deletedCount: 2 }
+
+Now all documents are deleted.. 
+we can go to mongoDB Compass and ADD DATA --> and import our students.json file 
+School> db.students.find()
+All documents are restored.
+School> db.students.find({},{name:true})
+
+School> db.students.find({},{_id:false,name:true})
+
+NOT EQUAL OPERATOR
+
+School> db.students.find({name:{$ne:"qa"}})
+$ne:"qa"  -> except qa all other names will be listed
+
+LESS THAN 
+School> db.students.find({age:{$lt:20}}) 
+Return age less than 20
+
+LESS THAN EQUAL
+School> db.students.find({age:{$lte:22}}) 
+Return exact age and less ones
+GREATER THAN
+School> db.students.find({age:{$gt:20}})
+Return ages greater than 20
+
+GREATER THAN EQUAL
+
+To find multiple documents within reach by putting values in Array
+School> db.students.find({name:{$in:["qa","test"]}})
+
+To find multiple documents NOT within reach by putting values in Array
+School> db.students.find({name:{$nin:["qa","test"]}})
+
+Using AND OPERATOR
+$and: 
+School> db.students.find({$and:[{fullTime:true},{age:{$lte:22}}]})
+we put conditon into [{},{}]
+
+ {
+    _id: ObjectId("646d3906f2b326820c1ffd6c"),
+    name: 'Hanny',
+    age: 13,
+    fullTime: true
+  }
+
+School> db.students.find({$and:[{fullTime:true},{age:{$gte:22}}]})
+Return list of documents with fullTime:true and age greater than or equal 22
+
+OR OPERATOR
+School> db.students.find({$or:[{fullTime:true},{age:{$lte:22}}]})
+
+NOR
+School> db.students.find({$nor:[{fullTime:true},{age:{$lte:22}}]})
+both conditions are false
+
+NOT OPERATOR
+School> db.students.find({age:{$not:{$gte:30}}})
+return value though it is null
+
+ {
+    _id: ObjectId("646e169ef2b326820c1ffd6f"),
+    name: 'qa',
+    age: null,
+    fullTime: false
+  }
+
+ INDEX 
+ School> db.students.find({name:"qa"}).explain("executionStats")
+ To  check name:"qa" in all documents -->totalDocsExamined: 8,
+To find a document among hundreds of document w use createIndex()
+method 
+to do it: 
+1. execute :
+School> db.students.createIndex({name:1})
+name_1
+2. execute:
+db.students.find({name:"qa"}).explain("executionStats")
+
+then it checks only one document  --> docsExamined: 1,
+To create a new collection
+School> db.createCollection("Course",{capped:true,size:10000000,max:100},{autoIndexId:true})
+
+School> show collections
+class
+Course
+
+School> db.Course.drop()
+true
+School> show collection
+
+School> show collections
+class
+students
+
+STEPS FOR mongoDB AUTOMATION
+
+https://www.youtube.com/watch?v=S4IgPTwwPBw&t=1082s
+
+1. execute in Terminal: 
+npm init --yes  
+2. npm i express
+3. create a folder src init create  file index.js 
+
+const express = require("express");
+const app = express();
+const port = process.env.PORT || 8888;
+app.listen(port, () => console.log("Server is listening on port", port));
+
+4. install nodemon to execute:
+npm i nodemon -D 
+
+5. Add this code to package.json
+"scripts": {
+    "start": "nodemon src/index.js"
+  },
+
+  6. To run server execute :
+  npm run start
+
+7. open browser: localhost:8888
+8. to connect to mongoDB 
+npm i mongoose
+9. npm install mongodb 
+10. install  -->  npm i dotenv --> to create env variables 
+then create a file with .env
+add this: 
+MONGODB_URI=mongodb+srv://nedimmerv:<password>@cluster0.zfa0dz0.mongodb.net/?retryWrites=true&w=majority
+
+From extention add : Rest Client 
+
+
