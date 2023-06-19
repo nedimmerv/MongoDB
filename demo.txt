@@ -1,1 +1,2 @@
 this is a test of adding a new file and renaming of repo
+this an addition from vsc 
